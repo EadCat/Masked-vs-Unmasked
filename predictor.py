@@ -43,6 +43,7 @@ if __name__ == "__main__":
     print(f'test data : {len(test_set)} files detected.')
     test_loader = DataLoader(dataset=test_set, batch_size=test_params['test_batch'],
                               shuffle=False, num_workers=user_setting['test_processes'])
+    classes = {0:'masked', 1:'unmasked'}
     # =================================================================================================
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -83,7 +84,11 @@ if __name__ == "__main__":
         with torch.no_grad():
             output = model.forward(image)
 
-        print(f'{output} / {label}')
+        value, indices = output.max(-1)
+        for i, val in indices, value:
+            print(f'predict {classes[i]} with {val*100:.2f} %.')
+
+        print(f'{output.max} / {label}')
     # =================================================================================================
 
     # ------------------------------------------------------------------------------------------------------------------
