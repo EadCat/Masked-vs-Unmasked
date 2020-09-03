@@ -26,12 +26,10 @@ if __name__ == "__main__":
     # ------------------------------------------------------------------------------------------------------------------
 
     # =========================================== transform ===========================================
-    mean = [0.485, 0.456, 0.406]
-    std = [0.229, 0.224, 0.225]
     transform_set = transforms.Compose([
-        transforms.Resize(size=(250, 250)),
+        transforms.Resize(size=test_params['resized']),
         transforms.ToTensor(),
-        transforms.Normalize(mean=mean, std=std)
+        transforms.Normalize(mean=test_params['mean'], std=test_params['std'])
     ])
     # =================================================================================================
 
@@ -85,10 +83,8 @@ if __name__ == "__main__":
             output = model.forward(image)
 
         value, indices = output.max(-1)
-        for i, val in indices, value:
-            print(f'predict {classes[i]} with {val*100:.2f} %.')
-
-        print(f'{output.max} / {label}')
+        for i, val, gt in zip(indices, value, label):
+            print(f'For GT {classes[int(gt)]}, predict {classes[int(i)]} with {val*100:.2f} %.')
     # =================================================================================================
 
     # ------------------------------------------------------------------------------------------------------------------
