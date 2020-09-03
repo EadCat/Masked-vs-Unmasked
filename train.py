@@ -103,7 +103,7 @@ if __name__ == "__main__":
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
     transform_set = transforms.Compose([
-        transforms.Resize(size=(250, 250)),
+        transforms.Resize(size=params['resized']),
         transforms.ToTensor(),
         transforms.Normalize(mean=mean, std=std)
     ])

@@ -27,12 +27,12 @@ save_directory = r'save'
 # ============================= model parameter control panel =============================
 # =============================== in training environment =================================
 params = OrderedDict()
-params['total_epochs'] = 30
+params['total_epochs'] = 10
 params['train_batch'] = 150
 params['valid_batch'] = 150
 params['learning_rate'] = 1e-5
 params['num_classes'] = 2
-params['resized'] = (500, 500) # tuple
+params['resized'] = (250, 250) # tuple
 params['mean'] = [0.485, 0.456, 0.406]
 params['std'] = [0.229, 0.224, 0.225]
 params['pretrain'] = 'model zoo'  # only for writing record
@@ -74,6 +74,6 @@ permission['shuffle'] = True
 permission['epoch_print'] = True
 permission['iter_print'] = True
 permission['valid_print'] = True
-permission['pretrain'] = True
+permission['pretrain'] = False
 permission['train_predict_store'] = True
 # =========================================================================================
