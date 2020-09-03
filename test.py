@@ -7,9 +7,6 @@ import os
 from parameters import *
 from networks.nets import *
 from eval.evaluator import *
-from dataloader.dataset import MetaDataset
-from dataloader import dict_transforms
-import functions.utils as util
 
 if __name__ == "__main__":
     # ------------------------------------------------------------------------------------------------------------------
@@ -89,7 +86,10 @@ if __name__ == "__main__":
         if environment['gpu']:
             value = value.cpu()
             indices = indices.cpu()
-        print(indices)
+            label = label.cpu()
+
+        print(f'pred: {indices}')
+        print(f'label: {label}')
 
         evaluator.record(indices, label)
         print(f'{(i+1) / len(test_loader) * 100:.2f} % processed.')

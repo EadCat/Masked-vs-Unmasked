@@ -27,7 +27,7 @@ save_directory = r'save'
 # ============================= model parameter control panel =============================
 # =============================== in training environment =================================
 params = OrderedDict()
-params['total_epochs'] = 10
+params['total_epochs'] = 100
 params['train_batch'] = 150
 params['valid_batch'] = 150
 params['learning_rate'] = 1e-5
@@ -43,9 +43,9 @@ params['loss_function'] = 'CrossEntropyLoss'  # <- It must be set manually. (sna
 # ============================= model parameter control panel =============================
 # ================================= in test environment ===================================
 test_params = OrderedDict()
-test_params['test_batch'] = 10
+test_params['test_batch'] = 150
 test_params['num_classes'] = 2
-test_params['resized'] = (1000, 1000)
+test_params['resized'] = (250, 250)
 test_params['mean'] = [0.485, 0.456, 0.406]
 test_params['std'] = [0.229, 0.224, 0.225]
 test_params['pretrain'] = 'model zoo'

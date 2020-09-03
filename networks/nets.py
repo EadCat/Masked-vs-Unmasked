@@ -17,7 +17,8 @@ class Classifier(nn.Module):
         output = F.relu(self.layer2(output))
         output = F.relu(self.layer3(output))
         output = F.relu(self.layer4(output))
-        output = self.final(self.layer5(output))
+        output = self.layer5(output)
+        # output = self.final(self.layer5(output))
         return output
 
 

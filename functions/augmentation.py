@@ -18,60 +18,17 @@ class AugManager(object):
                 iaa.Sometimes(0.5, iaa.AddToHueAndSaturation((-50, 50), per_channel=True)),
                 iaa.Sometimes(0.5, iaa.Fliplr(0.5)),
                 iaa.Sometimes(0.5, iaa.Flipud(0.5)),
-                iaa.Sometimes(0.5, iaa.Rotate((-50, 50)))
+                iaa.Sometimes(0.5, iaa.Rotate((-30, 30)))
             ], random_order=True)
         self.transformSet = iaalist
-        self.outscale = random.choice([0.8, 0.85, 0.9, 0.95])
+        self.outscale = random.choice([0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95])
 
-    def __call__(self, input_dict : {str : Union[Image.Image, np.ndarray]}) -> dict:
-        image, label = input_dict[tag_image], input_dict[tag_label]
+    def __call__(self, image):
         image = np.array(image)
-        label = np.array(label)
 
         # size measure
         y_max = image.shape[0]
         x_max = image.shape[1]
-
-        # np.ndarray -> imgaug.augmentables.segmaps.SegmentationMapsOnImage
-        label = SegmentationMapsOnImage(label, shape=image.shape)
-
-        # augmentation
-        # zoomset = iaa.OneOf([
-        #     iaa.Identity(),  # do nothing
-        #     iaa.Affine(scale=self.outscale),  # zoom out
-        #     RandomCrop(y_max, x_max).cut()  # zoom in
-        # ])
-        #
-        # image, label = zoomset(image=image, segmentation_maps=label)
-        image, label = self.transformSet(image=image, segmentation_maps=label)
-
-        # imgaug.augmentables.segmaps.SegmentationMapsOnImage -> np.ndarray
-        label = label.get_arr()
-
-        return {tag_image : image,
-                tag_label : label}
-
-    def augstore(self, src:dict, dst_base:str,
-                 dataname_extension='.tiff', labelname_extension='.tif',
-                 identifier=None):
-
-        os.makedirs(dst_base, exist_ok=True)
-        os.makedirs(os.path.join(dst_base, label_folder_name), exist_ok=True)
-        # get image
-        image = src[tag_image] # PIL.Image.Image
-        label = src[tag_label] # PIL.Image.Image
-        name = src[tag_name] # str
-
-        # PIL -> numpy
-        image = np.array(image)
-        label = np.array(label)
-
-        # size measure
-        y_max = image.shape[0]
-        x_max = image.shape[1]
-
-        # np.ndarray -> imgaug.augmentables.segmaps.SegmentationMapsOnImage
-        label = SegmentationMapsOnImage(label, shape=label.shape)
 
         # augmentation
         zoomset = iaa.OneOf([
@@ -79,25 +36,13 @@ class AugManager(object):
             iaa.Affine(scale=self.outscale),  # zoom out
             RandomCrop(y_max, x_max).cut()  # zoom in
         ])
-        image, label = zoomset(image=image, segmentation_maps=label)
-        image, label = self.transformSet(image=image, segmentation_maps=label)
 
-        # imgaug.augmentables.segmaps.SegmentationMapsOnImage -> np.ndarray
-        label = label.get_arr()
+        image = zoomset(image=image)
+        image = self.transformSet(image=image)
 
-        if not identifier == None:
-            name = name + '_' + str(identifier)
-
-        # numpy -> PIL.Image.Image
         image = Image.fromarray(image)
-        label = Image.fromarray(label)
 
-        image.save(os.path.join(dst_base, name + dataname_extension))
-        label.save(os.path.join(dst_base, label_folder_name, name + labelname_extension))
-
-        return {tag_image : image,
-                tag_label : label,
-                tag_name : name}
+        return image
 
 
 class RandomCrop(object):
@@ -105,7 +50,7 @@ class RandomCrop(object):
         assert isinstance(max_height, int) and max_height >= 1, 'max_height must be positive integer type.'
         assert isinstance(max_width, int) and max_width >= 1, 'max_width must be positive integer type.'
 
-        self.percent_limit = 0.15
+        self.percent_limit = 0.7
         self.top, self.right, self.bottom, self.left = self.operate_location(max_height, max_width)
 
     def operate_location(self, max_height, max_width):
